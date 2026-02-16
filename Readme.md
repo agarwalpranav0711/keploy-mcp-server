@@ -1,8 +1,7 @@
 # Keploy MCP Context Server (Node.js Prototype)
 
-A Node.js–based **Model Context Protocol (MCP) context server** prototype for Keploy that exposes structured, read-only project context (starting with test metadata) for AI tools, IDEs, and developer agents.
-
-This project is being developed as a potential **Google Summer of Code (GSoC)** contribution to Keploy.
+A Node.js–based Model Context Protocol (MCP) context server prototype for Keploy that exposes structured, read-only project context (starting with test metadata) for AI tools, IDEs, and developer agents. 
+This project explores a complementary context layer alongside Keploy's Go-based MCP CLI.
 
 ---
 
@@ -35,7 +34,34 @@ The initial focus is intentionally narrow to ensure correctness and clarity.
 
 ---
 
-## 🚫 Scope (What this project does NOT do)
+## 🧩 Architecture Overview
+```text
+Keploy (Go CLI)
+│
+│ Generates test artifacts
+▼
+MCP Context Server (Node.js)
+│
+│ Exposes structured, read-only metadata
+▼
+AI Tools / IDEs / Copilots
+```
+
+The context server acts as a reasoning layer for AI tools. It does not execute tests or modify Keploy data. Its sole responsibility is structured context exposure.
+
+---
+
+## 🧠 Design Principles
+
+- Read-only by design
+- Schema-driven responses
+- AI-first structured output
+- Transport-agnostic (HTTP prototype now, MCP transport later)
+- No duplication of Go MCP CLI responsibilities
+
+---
+
+## 🚫 Non-Goals (Intentional Scope Boundaries)
 
 This prototype **does not**:
 - Execute tests
@@ -68,7 +94,9 @@ Returns structured test metadata in a predictable, AI-readable format.
         "method": "GET",
         "path": "/users"
       },
-      "status": "passed"
+      "status": "passed",
+      "mocksUsed": ["user-service"],
+      "lastRun": "2026-02-01"
     },
     {
       "id": "test-002",
@@ -77,7 +105,9 @@ Returns structured test metadata in a predictable, AI-readable format.
         "method": "POST",
         "path": "/login"
       },
-      "status": "failed"
+      "status": "failed",
+      "mocksUsed": ["redis"],
+      "lastRun": "2026-02-01"
     }
   ]
 }
@@ -115,6 +145,15 @@ Then open: [http://localhost:3000/context/tests](http://localhost:3000/context/t
 
 ---
 
+## 🔌 Integration Plan with Keploy
+
+1. **Phase 1:** Static/mock test data (current prototype)
+2. **Phase 2:** Parse real Keploy test artifacts from project directories
+3. **Phase 3:** Align schema with keploy_manager structured outputs
+4. **Phase 4:** Add MCP-compatible transport (e.g., JSON-RPC over stdio)
+
+---
+
 ## 🛣 Roadmap (High Level)
 
 1. Align schemas more closely with the MCP specification
@@ -126,9 +165,7 @@ Then open: [http://localhost:3000/context/tests](http://localhost:3000/context/t
 
 ## 🤝 GSoC Context
 
-This repository represents an early-stage prototype and design exploration for the proposed "MCP Server for Keploy" GSoC project.
-
-Feedback, suggestions, and alignment discussions with Keploy mentors are highly welcome.
+This repository represents an early-stage prototype and design exploration for the proposed "MCP Server for Keploy" GSoC project. Feedback, suggestions, and alignment discussions with Keploy mentors are highly welcome.
 
 ---
 

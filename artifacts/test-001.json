@@ -1,0 +1,13 @@
+{
+  "id": "test-001",
+  "request": {
+    "method": "POST",
+    "url": "/login"
+  },
+  "response": {
+    "status": 200
+  },
+  "status": "failed",
+  "mocks": ["user-service", "redis"],
+  "lastRun": "2026-02-01"
+}
